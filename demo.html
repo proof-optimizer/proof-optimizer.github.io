@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Proof Explorer</title>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+<style>
+:root{--accent:#2563eb;--muted:#64748b;--card-border:#e6eefc;}
+html,body{height:100%;margin:0;background:#f8fbff;font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial;}
+.page{width:100%;max-width:none;margin:0 auto;padding:12px 24px;display:flex;flex-direction:column;gap:12px;}
+.site-title{text-align:center;color:#0f172a;font-weight:600;margin:6px 0 0 0;font-size:1.35rem;}
+.top-row{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px 6px;}
+.dataset-buttons{text-align:center;white-space:nowrap;}
+.dataset-buttons .btn{margin:0 6px;border-radius:8px;padding:6px 10px;font-weight:600;transition:all .13s ease;white-space:nowrap;}
+.dataset-buttons .btn:hover{transform:translateY(-2px);}
+.dataset-buttons .btn-active{background:var(--accent);color:white;border-color:var(--accent);box-shadow:0 6px 18px rgba(37,99,235,.16);}
+.column-headers{display:flex;gap:15px;padding:8px 20px;margin:0;}
+.column-headers .col{flex:1;display:flex;align-items:center;justify-content:center;}
+.column-headers .title{font-weight:700;color:#0f172a;}
+.column-headers .length{margin-left:8px;font-weight:500;color:var(--muted);font-size:.95rem;}
+.proof-area{display:flex;gap:20px;padding:0 20px;width:100%;box-sizing:border-box;}
+.proof-card{flex:1;background:white;border-radius:12px;border:1px solid var(--card-border);box-shadow:0 6px 20px rgba(12,18,34,.06);display:flex;flex-direction:column;overflow:hidden;min-height:380px;}
+.card-controls{display:flex;gap:8px;align-items:center;padding:10px 14px 0 14px;justify-content:flex-end;}
+.card-controls .btn{border-radius:8px;padding:6px 8px;min-width:36px;}
+.code-wrap{padding:10px 14px 18px 14px;overflow:auto;flex:1;}
+pre{margin:0;padding:8px;background:#fbfdff;border-radius:8px;overflow:auto;white-space:pre-wrap;word-break:break-word;}
+code{font-family:"JetBrains Mono",ui-monospace,monospace;font-size:1rem;line-height:1.45;display:block;color:#0f172a;background:none;}
+.proof-title{text-align:center;font-weight:600;color:#334155;margin-bottom:10px;}
+.proof-length{font-size:.9em;color:var(--muted);font-weight:400;margin-left:8px;}
+.font-controls{display:flex;gap:6px;align-items:center;}
+.font-controls .btn{border-radius:8px;width:36px;height:36px;padding:6px 0;display:inline-flex;align-items:center;justify-content:center;font-weight:700;transition:all .13s ease;}
+.font-controls .btn:hover{transform:translateY(-2px);background:var(--accent);color:white;border-color:var(--accent);box-shadow:0 6px 18px rgba(37,99,235,.12);}
+.nav-row{display:flex;justify-content:center;align-items:center;gap:12px;padding:14px;}
+.nav-row .btn{border-radius:10px;padding:8px 12px;font-weight:600;}
+.nav-row .btn.primary{background:var(--accent);color:white;border:1px solid var(--accent);box-shadow:0 8px 20px rgba(37,99,235,.12);}
+.page-counter{color:var(--muted);font-weight:600;padding-left:8px;padding-right:8px;}
+.copy-feedback{position:fixed;right:20px;bottom:20px;background:#0f172a;color:white;padding:8px 12px;border-radius:8px;opacity:0;transform:translateY(6px);transition:opacity .18s, transform .18s;z-index:9999;}
+.copy-feedback.show{opacity:1;transform:translateY(0);}
+@media (max-width:980px){.proof-area{flex-direction:column;}.column-headers{flex-direction:column;gap:6px;padding:0 10px;}.top-row{flex-direction:column;gap:8px;align-items:center;}}
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="top-row">
+    <div style="flex:1"></div>
+    <div style="flex:3;text-align:center"><div class="site-title">ProofOptimizer Visualizer</div></div>
+    <div style="flex:1;display:flex;justify-content:flex-end;align-items:center;">
+      <div class="dataset-buttons" role="tablist" aria-label="Dataset">
+        <button id="btnMinif2f" class="btn btn-outline-primary btn-sm btn-active">MiniF2F</button>
+        <button id="btnPutnam" class="btn btn-outline-primary btn-sm">PutnamBench</button>
+        <button id="btnImo" class="btn btn-outline-primary btn-sm">IMO</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="nav-row" role="navigation" aria-label="Navigation">
+    <button id="leftButton" class="btn btn-outline-primary">« Prev</button>
+    <button id="randButton" class="btn btn-outline-primary">Random</button>
+    <button id="rightButton" class="btn btn-outline-primary">Next »</button>
+    <div class="page-counter"><span id="currentPage">1</span> / <span id="totalPages">1</span></div>
+  </div>
+
+  <div class="column-headers" aria-hidden="false">
+    <div class="col"><div><span class="title">Original Proof</span> <span class="length">(length: <span id="hdr_orig_length">0</span>)</span></div></div>
+    <div class="col"><div><span class="title">Simplified Proof</span> <span class="length">(length: <span id="hdr_simp_length">0</span>)</span></div></div>
+  </div>
+
+  <div class="proof-area" role="main">
+    <div class="proof-card" aria-label="Original Proof card">
+      <div class="card-controls" aria-hidden="true">
+        <div class="font-controls" title="Decrease font"><button id="origFontMinus" class="btn btn-outline-secondary btn-sm">–</button></div>
+        <div class="font-controls" title="Increase font"><button id="origFontPlus" class="btn btn-outline-secondary btn-sm">+</button></div>
+        <button id="origCopy" class="btn btn-outline-primary btn-sm" title="Copy original proof">📋</button>
+      </div>
+      <div class="code-wrap"><pre><code id="orig_proof" class="language-lean" tabindex="0"></code></pre></div>
+    </div>
+
+    <div class="proof-card" aria-label="Simplified Proof card">
+      <div class="card-controls" aria-hidden="true">
+        <div class="font-controls" title="Decrease font"><button id="simpFontMinus" class="btn btn-outline-secondary btn-sm">–</button></div>
+        <div class="font-controls" title="Increase font"><button id="simpFontPlus" class="btn btn-outline-secondary btn-sm">+</button></div>
+        <button id="simpCopy" class="btn btn-outline-primary btn-sm" title="Copy simplified proof">📋</button>
+      </div>
+      <div class="code-wrap"><pre><code id="simp_proof" class="language-lean" tabindex="0"></code></pre></div>
+    </div>
+  </div>
+</div>
+
+<div id="copyFeedback" class="copy-feedback">Copied to clipboard</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/highlightjs-lean@1.2.0/dist/lean.min.js"></script>
+<script src="data/data_minif2f.js"></script>
+<script src="data/data_putnam.js"></script>
+<script src="data/data_imo.js"></script>
+<script>
+// Initialize
+let DATA = DATA_MINIF2F || [], currentPage = 1, totalPages = DATA.length || 0;
+let origFont = 1.0, simpFont = 1.0;
+
+function setPageCounts(){ $("#totalPages").text(totalPages); $("#currentPage").text(currentPage); }
+function applyFontSizes(){ $("#orig_proof").css("font-size",origFont+"em"); $("#simp_proof").css("font-size",simpFont+"em"); }
+function applyHighlight(id){ try{hljs.highlightElement(document.getElementById(id));}catch(e){} }
+function updateData(page){
+  const idx = page-1; if(!DATA||idx<0||idx>=totalPages) return; 
+  const item = DATA[idx]||{};
+  $("#orig_proof").text(item.orig_proof||""); 
+  $("#simp_proof").text(item.simp_proof||"");
+  $("#hdr_orig_length").text(item.orig_proof_length||(item.orig_proof||"").length);
+  $("#hdr_simp_length").text(item.simp_proof_length||(item.simp_proof||"").length);
+  $("#orig_proof").attr("aria-label","Original Lean proof");
+  $("#simp_proof").attr("aria-label","Simplified Lean proof");
+  applyHighlight("orig_proof"); applyHighlight("simp_proof"); applyFontSizes();
+}
+function updateNavButtons(){ $("#leftButton").prop("disabled",currentPage<=1); $("#rightButton").prop("disabled",currentPage>=totalPages); }
+function loadDataset(name){
+  if(name==="minif2f"){ DATA=DATA_MINIF2F||[]; $("#btnMinif2f").addClass("btn-active"); $("#btnPutnam").removeClass("btn-active"); $("#btnImo").removeClass("btn-active"); }
+  else if(name==="putnambench"){ DATA=DATA_PUTNAM||[]; $("#btnPutnam").addClass("btn-active"); $("#btnMinif2f").removeClass("btn-active"); $("#btnImo").removeClass("btn-active"); }
+  else if(name==="imo"){ DATA=DATA_IMO||[]; $("#btnImo").addClass("btn-active"); $("#btnMinif2f").removeClass("btn-active"); $("#btnPutnam").removeClass("btn-active"); }
+  totalPages=DATA.length||0; currentPage=1; setPageCounts(); updateData(currentPage); updateNavButtons();
+}
+function copyText(text){ if(!text) return; if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(text).catch(()=>{}); } 
+else{ const ta=document.createElement("textarea"); ta.value=text; document.body.appendChild(ta); ta.select(); document.execCommand("copy"); document.body.removeChild(ta); }
+const f=$("#copyFeedback"); f.addClass("show"); setTimeout(()=>f.removeClass("show"),900); }
+
+$(document).ready(function(){
+  if(DATA_MINIF2F&&DATA_MINIF2F.length) loadDataset("minif2f");
+  else if(DATA_PUTNAM&&DATA_PUTNAM.length) loadDataset("putnambench");
+  else if(DATA_IMO&&DATA_IMO.length) loadDataset("imo");
+  else{ DATA=[]; totalPages=0; setPageCounts(); }
+
+  $("#btnMinif2f").on("click",()=>loadDataset("minif2f"));
+  $("#btnPutnam").on("click",()=>loadDataset("putnambench"));
+  $("#btnImo").on("click",()=>loadDataset("imo"));
+
+  $("#leftButton").on("click",()=>{ if(currentPage>1) currentPage--; setPageCounts(); updateData(currentPage); updateNavButtons(); });
+  $("#rightButton").on("click",()=>{ if(currentPage<totalPages) currentPage++; setPageCounts(); updateData(currentPage); updateNavButtons(); });
+  $("#randButton").on("click",()=>{ if(totalPages>0){ currentPage=Math.floor(Math.random()*totalPages)+1; setPageCounts(); updateData(currentPage); updateNavButtons(); } });
+
+  $(document).keydown((e)=>{ if(e.which===37&&currentPage>1){currentPage--; setPageCounts(); updateData(currentPage); updateNavButtons(); e.preventDefault();}
+  else if(e.which===39&&currentPage<totalPages){currentPage++; setPageCounts(); updateData(currentPage); updateNavButtons(); e.preventDefault();} });
+
+  $("#origFontPlus").on("click",()=>{ origFont=Math.min(1.6,+(origFont+0.1).toFixed(2)); applyFontSizes(); });
+  $("#origFontMinus").on("click",()=>{ origFont=Math.max(0.7,+(origFont-0.1).toFixed(2)); applyFontSizes(); });
+  $("#simpFontPlus").on("click",()=>{ simpFont=Math.min(1.6,+(simpFont+0.1).toFixed(2)); applyFontSizes(); });
+  $("#simpFontMinus").on("click",()=>{ simpFont=Math.max(0.7,+(simpFont-0.1).toFixed(2)); applyFontSizes(); });
+
+  $("#origCopy").on("click",()=>copyText($("#orig_proof").text()));
+  $("#simpCopy").on("click",()=>copyText($("#simp_proof").text()));
+
+  applyFontSizes();
+});
+</script>
+</body>
+</html>

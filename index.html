@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="description"
+        content="Website for paper, Proof Optimizer">
+  <meta name="keywords" content="code, LLM, proof optimization, lean, formal math">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ProofOptimizer: Training Language Models to Simplify Proofs without Human Demonstrations</title>
+
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro"
+        rel="stylesheet">
+
+  <link rel="stylesheet" href="./static/css/bulma.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-carousel.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-slider.min.css">
+  <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="./static/css/index.css">
+  <link rel="icon" href="./images/favicon.png">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script defer src="./static/js/fontawesome.all.min.js"></script>
+  <script src="./static/js/bulma-carousel.min.js"></script>
+  <script src="./static/js/bulma-slider.min.js"></script>
+  <script src="./static/js/index.js"></script>
+
+  <style>
+    code {
+      background: none;   /* removes grey background */
+      padding: 0.1;         /* removes extra padding */
+    }
+    .publication-authors .author-block {
+      margin-right: 1em; /* Adjust the value as needed */
+    }
+.button-container {
+    display: flex;
+    gap: 15px; /* space between buttons */
+}
+
+.link-block a.button {
+    font-size: 1.15em;              /* bigger text */
+    padding: 0.8em 2em;             /* more padding */
+    border-radius: 12px;            /* slightly rounder */
+    background: linear-gradient(45deg, #FF7F50, #FF6347); /* vibrant gradient */
+    color: white;
+    font-weight: bold;
+    text-transform: uppercase;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+    transition: all 0.25s ease;
+    border: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5em;
+}
+
+.link-block a.button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+    background: linear-gradient(45deg, #FF6347, #FF4500); /* slightly different gradient on hover */
+}
+
+.link-block a.button .icon i {
+    font-size: 1.2em;
+}
+  </style>
+</head>
+<body>
+
+<section class="hero">
+  <div class="hero-body">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class="column has-text-centered">
+          <h1 style="font-size: 47px;" class="title is-1 publication-title">✂️ ProofOptimizer: Training Language Models to Simplify Proofs without Human Demonstrations</h1>
+          <div class="is-size-5 publication-authors">
+            <span class="author-block">
+              <a href="https://minimario.github.io/">Alex Gu</a><sup>1 2</sup></span>
+            </span>
+            <span class="author-block">
+              <a href="https://www.bartosz.cc/">Bartosz Piotrowski</a><sup>1</sup></span>
+            </span>
+            <span class="author-block">
+              <a href="https://scholar.google.com/citations?user=_dF0fX4AAAAJ">Fabian Gloeckle</a><sup>1</sup></span>
+            </span>
+            <span class="author-block">
+              <a href="https://yangky11.github.io/">Kaiyu Yang</a><sup>1</sup></span>
+            </span>
+            <span class="author-block">
+              <a href="https://www.markosyanaram.com/">Aram H. Markosyan</a><sup>1</sup>
+            </span>
+          </div>
+
+          <div class="is-size-5 publication-authors">
+            <!-- <span class="author-block"><sup>★</sup>Equal Contribution</span> -->
+            <span class="author-block"><sup>1</sup>Meta FAIR</span>
+            <span class="author-block"><sup>2</sup>MIT CSAIL</span>
+          </div>
+
+
+          <div class="column has-text-centered">
+            <div class="publication-links">
+                <span class="link-block">
+                <a href="./paper/proof-optimizer.pdf"
+                    class="external-link button is-normal is-rounded is-dark">
+                    <span class="icon">
+                        <i class="fas fa-file-pdf"></i>
+                    </span>
+                    <span>Read the Paper!</span>
+                </a>
+                </span>
+        
+                <span class="link-block">
+                    <a href="./demo.html"
+                    class="external-link button is-normal is-rounded is-dark">
+                    <span class="icon">
+                        <i class="fas fa-search"></i>
+                    </span>
+                    <span>Try the Demo!</span>
+                </a>
+                </span>
+
+                <!-- <span class="link-block">
+                <a href="https://github.com/facebookresearch/cruxeval"
+                    class="external-link button is-normal is-rounded is-dark">
+                    <span class="icon">
+                        <i class="fab fa-github"></i>
+                    </span>
+                    <span>Code</span>
+                </a>
+                </span>
+        
+                <span class="link-block">
+                <a href="https://huggingface.co/datasets/cruxeval-org/cruxeval"
+                    class="external-link button is-normal is-rounded is-dark">
+                    <span class="icon">
+                        <i class="far fa-images"></i>
+                    </span>
+                    <span>HF Dataset</span>
+                </a>
+                </span> -->
+            </div>
+          </div>
+
+          <br>
+          <img src="./images/fig1.png" width="100%"/>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- <section class="section">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-full">
+            <span>
+                <a href="https://crux-eval.github.io/leaderboard" class="box is-large is-link is-rounded" style="background-color:aquamarine; display:inline-block; font-size:120%; margin-left:1em;">
+                    <span>🏆 CRUXEval Leaderboard 🏆</span>
+                </a>
+            </span>
+            <span>
+                <a href="https://crux-eval.github.io/demo" class="box is-large is-link is-rounded" style="background-color:aquamarine; display:inline-block; font-size:120%; margin-left:1em;">
+                    <span> Sample Explorer </span>
+                </a>
+            </span>
+        </div>
+      </div>
+    </div>
+  </section> -->
+
+<section class="section" style="margin-bottom: 0; padding-bottom: 0;">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-full">
+        <h2 class="title is-3">Motivation</h2>
+        <div class="content has-text-justified" style="font-size: 120%;">
+          <p>
+            Large language models (LLMs) trained for theorem proving in formal systems like 
+            Lean have made remarkable progress—some now perform at near–International Mathematical 
+            Olympiad (IMO) level. These models benefit from reinforcement learning (RL) on Lean proofs, 
+            where correctness can be mechanically verified, eliminating hallucinations and providing clean 
+            reward signals. However, the same RL process that ensures correctness often leads to proofs 
+            that are technically valid but unnecessarily long, redundant, and opaque. For example, 
+            Seed-Prover’s <a href="https://github.com/ByteDance-Seed/Seed-Prover/blob/17f89e327e4f90f46b0af385efc233dbbe71f8bb/SeedProver/imo2025/IMO2025/P1.lean">Lean solution to IMO 2025 Problem 1</a> 
+            spans over four thousand lines—roughly sixteen times longer than its informal counterpart—making 
+            it hard to read, slow to verify, and poorly suited for further model training.
+          </p>
+
+          <p>
+            To address this, we introduce ProofOptimizer, a system that automatically simplifies 
+            Lean proofs while preserving correctness. ProofOptimizer combines a symbolic linter, 
+            a fine-tuned 7B language model specialized for proof simplification, and an iterative 
+            inference algorithm that progressively shortens proofs. It can reduce proof length by 
+            over 87% on MiniF2F and 57% on PutnamBench, and even halve the size of recent IMO proofs. 
+            Beyond aesthetics, shorter proofs improve both training efficiency and Lean’s verification
+            speed, suggesting that proof simplification may be as crucial to formal reasoning as 
+            correctness itself.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" style="margin-bottom: 0; padding-bottom: 0;">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-full">
+          <h2 class="title is-3">Proof Simplification: Task and Metrics</h2>
+          <div class="content has-text-justified" style="font-size: 120%;">
+            <p>
+              <b>Task Definition:</b> Proof simplification means taking a valid Lean 
+              proof and producing a simpler one that still proves the same statement. Given a 
+              theorem with proof <i>p</i>, the goal is to find another valid proof <i>p*</i>
+              that minimizes some measurable complexity metric L. In this work, we use proof length—the number of 
+              Lean tokens—as our measure of simplicity. This captures structural brevity
+              while ignoring variable names, comments, and formatting, though the approach can generalize
+              to any automatically computed metric.
+            </p>
+
+            <p> 
+              <b>Evaluation Metrics:</b> For each original proof and its <i>k</i> candidates for simplification, 
+              we measure the length of each valid candidate. We report two metrics:
+              <ul>
+                <li>min@k: the shortest valid proof among k attempts (lower is better)</li>
+                <li>red@k: the relative reduction between the original and shortest proof, 1 - (min@k / |p|) (higher is better)</li>
+              </ul>
+            </p>
+          </div>
+        </div>
+      </div>
+  </section>
+
+    <section class="section" style="margin-bottom: 0; padding-bottom: 0;">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-full">
+          <h2 class="title is-3">Data: Generating High-Quality Theorems via Sketching</h2>
+          <div class="content has-text-justified" style="font-size: 120%;">
+            <p>We created a high-quality dataset for training proof-simplifying models using a four-step pipeline:</p>
+            <ul>
+              <li><i>Problem Collection:</i> Gather challenging theorem-proving problems from <a href="https://huggingface.co/datasets/Goedel-LM/Goedel-Pset-v1">Goedel-Pset</a> while filtering out simple computational tasks.</li>
+              <li><i>Proof Sketching:</i> Train a model to convert natural language solutions into Lean proof sketches—high-level outlines with detailed steps temporarily marked as <code>sorry</code>.</li>
+              <li><i>Theorem Extraction & Filtering:</i> Split proof sketches into individual sub-theorems, then remove trivial ones with a custom <code>AUTO</code> tactic.</li>
+              <li><i>Proof Generation:</i> Use <a href="https://github.com/Goedel-LM/Goedel-Prover-V2">Goedel-Prover-V2-32B</a> to generate full Lean proofs, successfully proving 145K theorems, which became our training dataset.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+  </section>
+
+  <section class="section" style="margin-bottom: 0; padding-bottom: 0;">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-full">
+          <h2 class="title is-3">Training: Expert Iteration vs. RL vs. Test-Time RL</h2>
+          <div class="content has-text-justified" style="font-size: 120%;">
+            <p>
+              We compare two training approaches for ProofOptimizer. <i>ProofOptimizer-ExpIt (expert iteration)</i> gradually improves 
+              the model by sampling candidate simplifications, verifying them in Lean, and retraining on successful 
+              reductions. Across multiple rounds, this process steadily improves both minimum proof 
+              length and relative reduction metrics. <i>ProofOptimizer-RL (online RL)</i> runs GRPO with relative reduction 
+              in proof length as a reward. RL significantly improves single-sample performance but can reduce diversity, a common effect. 
+              Finally, running online RL on the evaluation set at test-time further boosts single-shot performance. Overall, our ProofOptimizer outperforms strong baselines like Gemini-2.5-Pro, achieving substantial proof shortening while 
+              maintaining correctness.
+            </p>
+          <img src="./images/fig3.png" width="100%"/>
+        </div>
+      </div>
+  </section>
+
+  <section class="section" style="margin-bottom: 0; padding-bottom: 0;">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-full">
+          <h2 class="title is-3">Inference-Time: Iterative Simplification Shows Strong Results!</h2>
+          <div class="content has-text-justified" style="font-size: 120%;">
+            <p>
+              We study several algorithms at inference-time, and find iterative proof shortening to be the most effective.
+              For a given proof, we sample <it>k</it> candidate shortenings and take the shortest correct one. Then, 
+              we sample <it>k</it> shortenings of the new proof, take the shortest correct one -- and so on.
+              Below we present results on the miniF2F and PutnamBench datasets using ProofOptimizer-ExpIt. We use 64 
+              samples per iteration for the first six iterations and 1024 for iterations seven and eight. Overall, 
+              combining ProofOptimizer with iterative proof shortening proves highly effective on both miniF2F 
+              and PutnamBench, reducing the average proof length from 334 to 75 and from 1468 to 811, 
+              corresponding to an average per-proof reduction of 87.9% and 57.2%, respectively. The plot on the right shows 
+              overall shortening vs. original proof length, showing that longer proofs remain more difficult to simplify.
+            </p>
+          </div>
+          <img src="./images/fig5.png" width="90%"/>
+
+          <div class="content has-text-justified" style="font-size: 120%;">
+            <p>
+              Finally, we demonstrate the effectiveness of ProofOptimizer on an out-of-distribution dataset, 
+              Seed-Prover's <a href="https://github.com/ByteDance-Seed/Seed-Prover/tree/17f89e327e4f90f46b0af385efc233dbbe71f8bb/SeedProver/imo2025/IMO2025">four IMO 2025 proofs</a>. 
+              Using an order of magnitude higher sampling budget, we achieve a significant reduction in the proof length 
+              for all four problems, showcasing the potential of our model and technique.
+            </p>
+            <img src="./images/fig4.png" width="100%"/>
+        </div>
+      </div>
+  </section>
+
+  <section class="section" style="margin-bottom: 0; padding-bottom: 0;">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-full">
+          <h2 class="title is-3">Downstream Benefits of Proof Simplification</h2>
+          <div class="content has-text-justified" style="font-size: 120%;">
+            <p>
+              <b>Training on Simplified Proofs Improves Generation</b>: We explored whether training 
+              on shorter, cleaner proofs helps models learn more effectively. To test this, we 
+              fine-tuned identical models on two datasets: one containing original proofs generated by 
+              Goedel-Prover-V2, and another containing the same proofs simplified by ProofOptimizer. 
+              The simplified versions were about 40% shorter on average. While both training runs reached 
+              similar final losses, models trained on simplified proofs achieved slightly higher accuracy 
+              on the MiniF2F benchmark. This suggests that shorter, more structured proofs may provide 
+              clearer learning signals and reduce training instability caused by overly long or noisy examples.
+            </p>
+          </div>
+          <img src="./images/fig6.png" width="100%"/>
+          <br>
+          <div class="content has-text-justified" style="font-size: 120%;">
+            <p>
+              <b>Simplified Proofs Run Faster</b>: Simpler proofs don’t just read better—they often execute faster. 
+              Using Lean’s profiling tools, we compared the compilation times of original and simplified proofs. 
+              Across MiniF2F and PutnamBench, most simplified proofs ran faster, with roughly two-thirds showing 
+              at least a 10% speedup and many exceeding 50%. The improvement was especially large for proofs that 
+              were slow to begin with. The gains mainly come from eliminating redundant tactics, though in a few 
+              cases, shorter proofs were slower when they replaced efficient strategies with simpler but less 
+              optimized reasoning.
+            </p>
+          </div>
+          <img src="./images/fig7.png" width="100%"/>
+        </div>
+      </div>
+  </section>
+
+  <section class="section" style="margin-bottom: 0; padding-bottom: 0;">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-full">
+          <h2 class="title is-3">Takeaways</h2>
+          <div class="content has-text-justified" style="font-size: 120%;">
+            <p>
+              ProofOptimizer shows that language models can be trained not just to generate correct 
+              formal proofs, but also to make them significantly more concise and readable. By combining 
+              expert iteration, reinforcement learning, and Lean-based verification, our approach achieves 
+              dramatic reductions in proof length—up to 87% on MiniF2F and 57% on PutnamBench—while maintaining correctness.
+            </p>
+            <p>
+              Beyond shortening proofs, simplified proofs have practical benefits: they execute faster in Lean 
+              and can improve downstream model training, leading to better performance on new theorem proving 
+              tasks. Overall, proof simplification bridges the gap between mechanically verified correctness 
+              and human-understandable reasoning, making AI-generated mathematics both reliable and interpretable.
+            </p>
+          </div>
+        </div>
+      </div>
+  </section>
+
+
+
+<section class="section" id="BibTeX">
+  <div class="container is-max-desktop content">
+    <h2 class="title">BibTeX</h2>
+    <pre><code>TODO</code></pre>
+  </div>
+</section>
+
+
+<footer class="footer">
+  <div class="container">
+    <!-- <div class="content has-text-centered">
+      <a class="icon-link"
+         href="./static/videos/nerfies_paper.pdf">
+        <i class="fas fa-file-pdf"></i>
+      </a>
+      <a class="icon-link" href="https://github.com/keunhong" class="external-link" disabled>
+        <i class="fab fa-github"></i>
+      </a>
+    </div> -->
+    <div class="columns is-centered">
+      <div class="column is-8">
+        <div class="content">
+          <p>
+            The source code from this website is borrowed from <a href="https://github.com/nerfies/nerfies.github.io">this template</a>!
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
